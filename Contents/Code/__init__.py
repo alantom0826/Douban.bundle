@@ -86,6 +86,7 @@ class DoubanAgent(Agent.Movies):
 		metadata.title = m['title']
 		metadata.original_title = m['original_title']
 		metadata.summary = m['summary']
+		metadata.year = int(m['year'])
 
 		# Genres
 		metadata.genres.clear()
@@ -99,14 +100,23 @@ class DoubanAgent(Agent.Movies):
 
 		# Directors
 		metadata.directors.clear()
-		for director in m['directors']:
-			metadata.directors.add(director['name'])
+		for movie_director in m['directors']:
+			director = metadata.directors.new()
+			director.name = movie_director['name']
+
+        # Writers
+		metadata.writers.clear()
+		for movie_writer in m['writers']:
+			writer = metadata.writers.new()
+			writer.name = movie_writer['name']
 
 		# Casts
 		metadata.roles.clear()
 		for cast in m['casts']:
 			role = metadata.roles.new()
-			role.actor = cast['name']
+			role.name = cast['name']
+			if cast['avatars'] is not None:
+				role.photo = cast['avatars']['medium']
 
 		# Poster
 		if len(metadata.posters.keys()) == 0:
